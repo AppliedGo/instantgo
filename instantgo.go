@@ -19,28 +19,59 @@ Comments and code in this file are used for describing and explaining a particul
 -->
 
 +++
-title = ""
-description = ""
+title = "Instant Go"
+description = "Run Go code in the browser with Klipse and Yaegi"
 author = "Christoph Berger"
 email = "chris@appliedgo.net"
-date = "2017-00-00"
+date = "2021-08-31"
 draft = "true"
 categories = [""]
 tags = ["", "", ""]
 articletypes = ["Tutorial"]
 +++
 
-### Summary goes here
+Blog articles about Go are mostly static. Well, this might change, as authors now can include Go code that runs in the browser right away.
 
 <!--more-->
 
-## Intro goes here
+## A Go playground without a server
+
+Surely you know the Go playground already. It's been around since Go 1.0. The Go playground consists of a Web UI and a server component that runs the code entered in the UI and serves the output. A classic SPA Web App if you want. The obvious drawback for anybody who wants to run a similiar service is the cost (in terms of time and money) of setting up and running the backend.
+
+What if there was a playground that runs entirely in the browser?
+
+Well, now there is.
+
+
+## Meet Klipse
+
+There is a project named Klipse that provides browser-side REPLs (Read-Eval(uate)-Print Loops) for many languages since years. Each language needs a different approach though. And recently, the Klipse team announced support for Go.
+
+This means there is now a workable server-less (yes, really, server-less, not just "serverless" in the sense of "running on servers that I don't have to care about") Go-playground-like solution for online documentation, blogs, tutorials, and so forth, to provide code that the reader can immediately run – and play with.
+
+
+## How Klipse runs Go in the browser
+
+Two words: Yaegi and WASM.
+
+Yægi is a Go interpreter written and maintained by the Træfik team. (Yeah, they obviously have a faible for the "æ" ligature.) Yægi
+
 
 ## The code
+
+{{< klipse_go >}}
+
 */
 
 // ## Imports and globals
 package main
+
+import "fmt"
+
+// Klipse automatically runs func main() whenever the source changes.
+func main() {
+	fmt.Println("Hulloh World")
+}
 
 /*
 ## How to get and run the code
