@@ -60,12 +60,14 @@ Two words: Yægi and WASM.
 
 Now Yægi usually runs in the terminal or as a Go library, but thanks to the [Web Assembly](https://en.wikipedia.org/wiki/WebAssembly) (or short: WASM) standard, this is no excuse for not running Yægi in the browser.
 
-And that's pretty much all there is, although I can imagine that it took quite some effort to make all this work smoothly. So kudos to the Klipse team for their REPL framework, and to [Miguel Liezun](https://github.com/mliezun) who [provided the Go/Yægi integration](https://github.com/viebel/klipse/pull/393).
+And that's pretty much all there is, although I can imagine that it took quite some effort to make all this work smoothly. So kudos to the Klipse team for their universal REPL framework, and to [Miguel Liezun](https://github.com/mliezun) who [provided the Go/Yægi integration](https://github.com/viebel/klipse/pull/393).
 
 
 ## What you can do with Klipse
 
-Each Klipse snippet is a REPL that runs continuously. You can edit the code right in the browser, and as soon as the code compiles without errors, the eval loop runs and shows the result in the output pane. This is really neat! Try for yourself with the below code which I borrowed from my [regexp article](https://appliedgo.net/regexp). (I stripped the comments for brevity, so feel free to visit the regexp article for more details.) Play with the regular expressions in `exps` and see how the output changes.
+Each Klipse snippet is a REPL that runs continuously. You can edit the code right in the browser, and as soon as the code compiles without errors, the eval loop runs and shows the result in the output pane. This is really neat!
+
+Try for yourself with the below code which I borrowed from my [regexp article](https://appliedgo.net/regexp). (I stripped the comments for brevity, so feel free to visit the regexp article for more details.) Play with the regular expressions in `exps` and see how the output changes.
 
 
 <!-- Klipse integration part 1 -->
@@ -143,7 +145,7 @@ func main() {
 
 Code can also be served from a GitHub gist, if code and blog text shall remain separate. The code window then shows the gist URL in an auto-generated comment.
 
-Below is the code from my article about [futures in Go](https://appliedgo.net/futures/) (again, with comments stripped for brevity).
+Below is the code from my article about [futures in Go](https://appliedgo.net/futures/) (again, with comments stripped for brevity) that I extracted into a gist.
 
 <pre><code class="language-klipse-go" data-gist-id="christophberger/2378d127b561c7f08332326cda205db8">
 </code></pre>
@@ -214,7 +216,7 @@ Besides this, I found that the Klipse mechanisms do not play well with the way m
 
 ## Conclusion
 
-With Klipse, running Go in the browser is almost effortless. A few snippets of HTML for loading scripts and CSS, and you're done. All modern browsers support WASM by now
+With Klipse, running Go in the browser is almost effortless. A few snippets of HTML for loading scripts and CSS, and you're done. The available functionality is minimalistic but for the purpose of demonstrating things through small code snippets, it is certainly sufficient.
 
 **Happy coding!**
 
