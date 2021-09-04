@@ -20,23 +20,23 @@ Comments and code in this file are used for describing and explaining a particul
 
 +++
 title = "Instant Go"
-description = "Run Go code in the browser with Klipse and Yaegi"
+description = "Run Go code in the browser with Klipse and Yaegi. No backend required."
 author = "Christoph Berger"
 email = "chris@appliedgo.net"
-date = "2021-08-31"
-draft = "true"
-categories = [""]
-tags = ["", "", ""]
-articletypes = ["Tutorial"]
+date = "2021-09-04"
+draft = "false"
+categories = ["Go Ecosystem"]
+tags = ["repl", "wasm", "browser", "yaegi"]
+articletypes = ["Tools and Libraries"]
 +++
 
-Blog articles about Go are mostly static. Well, this might change, as authors now can include Go code that runs in the browser right away.
+Edit and run Go code right in the browser. No backend required.
 
 <!--more-->
 
 ## A Go playground without a server
 
-Surely you know the Go playground already. It's been around since Go 1.0. The Go playground consists of a Web UI and a server component that runs the code entered in the UI and serves the output. A classic SPA Web App if you want. The obvious drawback for anybody who wants to run a similiar service is the cost (in terms of time and money) of setting up and running the backend.
+Surely you know the Go playground already. It's been around since Go 1.0. The Go playground consists of a Web UI and a server component that runs the code entered in the UI and serves the output. It's a classic Single-Page Application (SPA). The obvious drawback for anybody who wants to run a similar service is the cost (in terms of time, sweat, tears, and money) of setting up and running the backend.
 
 What if there was a playground that runs entirely in the browser?
 
@@ -45,57 +45,181 @@ Well, now there is.
 
 ## Meet Klipse
 
-There is a project named Klipse that provides browser-side REPLs (Read-Eval(uate)-Print Loops) for many languages since years. Each language needs a different approach though. And recently, the Klipse team announced support for Go.
+There is a project named [Klipse](https://book.klipse.tech/) that provides browser-side REPLs (**R**ead-**E**val(uate)-**P**rint **L**oops) for many languages since years. Each language needs a different approach though. A few days ago, on August 29th, the Klipse team [announced support for Go](https://blog.klipse.tech/golang/2021/08/29/blog-go.html).
 
-This means there is now a workable server-less (yes, really, server-less, not just "serverless" in the sense of "running on servers that I don't have to care about") Go-playground-like solution for online documentation, blogs, tutorials, and so forth, to provide code that the reader can immediately run – and play with.
+This means nothing less that there is now a server-less Go playground available for online documentation, blogs, tutorials, and so forth, to provide code that the reader can immediately run – and edit.
+
+And yes, this is literally *server-less* in the sense of *"no backend required"*, and not the kind of "serverless" that commonly is an euphemism for *"the backend runs on servers that other people manage for me"*.
 
 
 ## How Klipse runs Go in the browser
 
-Two words: Yaegi and WASM.
+Two words: Yægi and WASM.
 
-Yægi is a Go interpreter written and maintained by the Træfik team. (Yeah, they obviously have a faible for the "æ" ligature.) Yægi
+[Yægi](https://github.com/traefik/yaegi) is a Go interpreter written and maintained by the Træfik team. (Yeah, they obviously have a weakness for names with an "æ" ligature.) Yægi supports the latest two Go versions, which is pretty neat, since typical Go blog article tend to report new things around Go that might not run on older Go versions.
+
+Now Yægi usually runs in the terminal or as a Go library, but thanks to the [Web Assembly](https://en.wikipedia.org/wiki/WebAssembly) (or short: WASM) standard, this is no excuse for not running Yægi in the browser.
+
+And that's pretty much all there is, although I can imagine that it took quite some effort to make all this work smoothly. So kudos to the Klipse team for their REPL framework, and to [Miguel Liezun](https://github.com/mliezun) who [provided the Go/Yægi integration](https://github.com/viebel/klipse/pull/393).
 
 
-## The code
+## What you can do with Klipse
 
-{{< klipse_go >}}
+Each Klipse snippet is a REPL that runs continuously. You can edit the code right in the browser, and as soon as the code compiles without errors, the eval loop runs and shows the result in the output pane. This is really neat! Try for yourself with the below code which I borrowed from my [regexp article](https://appliedgo.net/regexp). (I stripped the comments for brevity, so feel free to visit the regexp article for more details.) Play with the regular expressions in `exps` and see how the output changes.
 
-*/
 
-// ## Imports and globals
+<!-- Klipse integration part 1 -->
+
+<link rel="stylesheet" type="text/css" href="https://storage.googleapis.com/app.klipse.tech/css/codemirror.css">
+
+<script>
+	window.klipse_settings = {
+		selector_golang: '.language-klipse-go',
+        selector_eval_js: '.lang-eval-js',
+	};
+</script>
+
+<!-- See also the script tag at the end of this document -->
+
+<pre><code class="language-klipse-go">
+
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"regexp"
+)
 
-// Klipse automatically runs func main() whenever the source changes.
-func main() {
-	fmt.Println("Hulloh World")
+func prettyMatches(m []string) string {
+	s := "["
+	for i, e := range m {
+		s += e
+		if i < len(m)-1 {
+			s += "|"
+		}
+	}
+	s += "]"
+	return s
 }
 
-/*
-## How to get and run the code
+func prettySubmatches(m [][]string) string {
+	s := "[\n"
+	for _, e := range m {
+		s += "    " + prettyMatches(e) + "\n"
+	}
+	s += "]"
+	return s
+}
 
-Step 1: `go get` the code. Note the `-d` flag that prevents auto-installing
-the binary into `$GOPATH/bin`.
+var (
+	exps = []string{"b.*tter", "b(i|u)tter", `batter (\w+)`}
 
-    go get -d github.com/appliedgo/TODO:
+	text = `Betty Botter bought some butter
+But she said the butter’s bitter
+If I put it in my batter, it will make my batter bitter
+But a bit of better butter will make my batter better
+So ‘twas better Betty Botter bought a bit of better butter`
+)
 
-Step 2: `cd` to the source code directory.
+// Klipse automatically runs func main() whenever the source changes.
 
-    cd $GOPATH/src/github.com/appliedgo/TODO:
+func main() {
+	for _, e := range exps {
+		re := regexp.MustCompile(e)
+		fmt.Println(e + ":")
+		fmt.Println("1. FindString: ", re.FindString(text))
+		fmt.Println("2. FindStringIndex: ", re.FindStringIndex(text))
+		fmt.Println("3. FindStringSubmatch: ", re.FindStringSubmatch(text))
+		fmt.Printf("4. FindAllString: %v\n", prettyMatches(re.FindAllString(text, -1)))
+		fmt.Printf("5. FindAllStringIndex: %v\n", re.FindAllStringIndex(text, -1))
+		fmt.Printf("6. FindAllStringSubmatch: %v\n\n", prettySubmatches(re.FindAllStringSubmatch(text, -1)))
+	}
+}
 
-Step 3. Run the binary.
-
-    go run TODO:.go
+</code></pre>
 
 
-## Odds and ends
-## Some remarks
-## Tips
-## Links
+## Code from a gist
 
+Code can also be served from a GitHub gist, if code and blog text shall remain separate. The code window then shows the gist URL in an auto-generated comment.
+
+Below is the code from my article about [futures in Go](https://appliedgo.net/futures/) (again, with comments stripped for brevity).
+
+<pre><code class="language-klipse-go" data-gist-id="christophberger/2378d127b561c7f08332326cda205db8">
+</code></pre>
+
+
+## How to integrate the Klipse REPL in your Web page
+
+The exact steps for setting up a Klipse Go REPL are spread across the Klipse [blog](https://blog.klipse.tech/golang/2021/08/29/blog-go.html) and [repo pages](https://github.com/viebel/klipse), so let me summarize here what I have done on this page.
+
+### Step 1: import the scripts
+
+Two HTML snippets are required for importing the Klipse/Yaegi REPL.
+
+The first one goes into the header or in the body, but before the Go code snippets.
+
+```html
+<link rel="stylesheet" type="text/css" href="https://storage.googleapis.com/app.klipse.tech/css/codemirror.css">
+
+<script>
+    window.klipse_settings = {
+        selector_golang: '.language-klipse-go',
+    };
+</script>
+```
+
+The second one should be added to the end of the page, before the closing `<body>` tag.
+
+```html
+<script src="https://storage.googleapis.com/app.klipse.tech/plugin_prod/js/klipse_plugin.min.js"></script>
+```
+
+### Step 2: add Go Code snippets
+
+Each Go snippet that shall run in the browser must be placed inside a `<code>` block with class "language-klipse-go".
+
+A package declaration is not needed. The code always runs inside package `main` and needs a `main` function as entry point. Each Go snippet runs its own Yægi interpreter, hence multiple Go snippets on the same page do not interfere with each other.
+
+```html
+<pre><code class="language-klipse-go">
+import "fmt"
+
+func main() {
+  fmt.Println("Hello World!")
+}
+</code></pre>
+```
+
+For GitHub gists, the HTML snippet looks like this:
+
+```html
+<pre><code class="language-klipse-go" data-gist-id="christophberger/2378d127b561c7f08332326cda205db8">
+</code></pre>
+```
+
+Easy enough, right?
+
+## Limitations
+
+Of course it is not all sunshine and roses. There are a few limitations to consider.
+
+- Go code snippets are isolated from each other. It is not possible to spread code across snippets and run them in a single eval loop, with a single output. That's somehow expected because each snippet runs its own Yægi instance.
+- Right now, importing third-party libraries does not work.
+- Yægi comes with a few [limitations](https://github.com/traefik/yaegi#Limitations), so don't expect 100.0% compatibility. For example, I tried to run the code from the [article about balanced trees](https://appliedgo.net/balancedtree/) but got an error from the `reflect` package. (No, the binary tree code does not use `reflect`.)
+- A few features are still on the wish list, such as saving or exporting modified code.
+
+Besides this, I found that the Klipse mechanisms do not play well with the way my blog generator works. I use a custom preprocessor for dividing code and comments to display them nicely side by side. This tears the code apart and makes it unusable for Klipse. I guess I'll find a solution for this, but for the time being, I'll have to add a single Klipse window to the end of the article to provide a runnable version of the code discussed in the article.
+
+
+## Conclusion
+
+With Klipse, running Go in the browser is almost effortless. A few snippets of HTML for loading scripts and CSS, and you're done. All modern browsers support WASM by now
 
 **Happy coding!**
+
+<!-- Klipse integration part 2 -->
+
+<script src="https://storage.googleapis.com/app.klipse.tech/plugin_prod/js/klipse_plugin.min.js"></script>
 
 */
