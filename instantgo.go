@@ -90,6 +90,7 @@ package main
 import (
 	"fmt"
 	"regexp"
+	"runtime"
 )
 
 func prettyMatches(m []string) string {
@@ -126,6 +127,7 @@ So ‘twas better Betty Botter bought a bit of better butter`
 // Klipse automatically runs func main() whenever the source changes.
 
 func main() {
+	fmt.Println("Go version:", runtime.Version())
 	for _, e := range exps {
 		re := regexp.MustCompile(e)
 		fmt.Println(e + ":")
@@ -204,9 +206,9 @@ Easy enough, right?
 
 ## Limitations
 
-Of course it is not all sunshine and roses. There are a few limitations to consider.
+Of course, it is not all sunshine and roses. There are a few limitations to consider.
 
-- Go code snippets are isolated from each other. It is not possible to spread code across snippets and run them in a single eval loop, with a single output. That's somehow expected because each snippet runs its own Yægi instance.
+- Go code snippets are isolated from each other. It is not possible to spread code across snippets and run them in a single `eval` loop, with a single output. That's somehow expected because each snippet runs its own Yægi instance.
 - Right now, importing third-party libraries does not work.
 - Yægi comes with a few [limitations](https://github.com/traefik/yaegi#Limitations), so don't expect 100.0% compatibility. For example, I tried to run the code from the [article about balanced trees](https://appliedgo.net/balancedtree/) but got an error from the `reflect` package. (No, the binary tree code does not use `reflect`.)
 - A few features are still on the wish list, such as saving or exporting modified code.
@@ -217,6 +219,14 @@ Besides this, I found that the Klipse mechanisms do not play well with the way m
 ## Conclusion
 
 With Klipse, running Go in the browser is almost effortless. A few snippets of HTML for loading scripts and CSS, and you're done. The available functionality is minimalistic but for the purpose of demonstrating things through small code snippets, it is certainly sufficient.
+
+## Update 2024
+
+Revisiting this article and the Klipse repository two and a half years later, I discovered that the Go version is still at Go 1.16 (yes, that's pre-generics), and there aren't any signs to keep the Go version up to date. (I added a `Println()` to the first code snippet to display the Go version, in case there are any changes.)
+
+I therefore recommend using Klipse for Go only if the Go version does not matter.
+
+If you are looking for a flexible, maintained alternative, take a look at [Codapi.org](https://codapi.org). It's server-based, but responses are swift, and the project is open source.
 
 **Happy coding!**
 
