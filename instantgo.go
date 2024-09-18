@@ -67,7 +67,7 @@ And that's pretty much all there is, although I can imagine that it took quite s
 
 Each Klipse snippet is a REPL that runs continuously. You can edit the code right in the browser, and as soon as the code compiles without errors, the eval loop runs and shows the result in the output pane. This is really neat!
 
-Try for yourself with the below code which I borrowed from my [regexp article]({{< ref "/regexp" >}}). (I stripped the comments for brevity, so feel free to visit the regexp article for more details.) Play with the regular expressions in `exps` and see how the output changes.
+Try for yourself with the below code which I borrowed from my [regexp article]({{< ref "/post/regexp" >}}). (I stripped the comments for brevity, so feel free to visit the regexp article for more details.) Play with the regular expressions in `exps` and see how the output changes.
 
 
 <!-- Klipse integration part 1 -->
@@ -147,7 +147,7 @@ func main() {
 
 Code can also be served from a GitHub gist, if code and blog text shall remain separate. The code window then shows the gist URL in an auto-generated comment.
 
-Below is the code from my article about [futures in Go]({{< ref "/futures/" >}}) (again, with comments stripped for brevity) that I extracted into a gist.
+Below is the code from my article about [futures in Go]({{< ref "/post/futures/" >}}) (again, with comments stripped for brevity) that I extracted into a gist.
 
 <pre><code class="language-klipse-go" data-gist-id="christophberger/2378d127b561c7f08332326cda205db8">
 </code></pre>
@@ -210,7 +210,7 @@ Of course, it is not all sunshine and roses. There are a few limitations to cons
 
 - Go code snippets are isolated from each other. It is not possible to spread code across snippets and run them in a single `eval` loop, with a single output. That's somehow expected because each snippet runs its own Yægi instance.
 - Right now, importing third-party libraries does not work.
-- Yægi comes with a few [limitations](https://github.com/traefik/yaegi#Limitations), so don't expect 100.0% compatibility. For example, I tried to run the code from the [article about balanced trees]({{< ref "/balancedtree/" >}}) but got an error from the `reflect` package. (No, the binary tree code does not use `reflect`.)
+- Yægi comes with a few [limitations](https://github.com/traefik/yaegi#Limitations), so don't expect 100.0% compatibility. For example, I tried to run the code from the [article about balanced trees]({{< ref "/post/balancedtree/" >}}) but got an error from the `reflect` package. (No, the binary tree code does not use `reflect`.)
 - A few features are still on the wish list, such as saving or exporting modified code.
 
 Besides this, I found that the Klipse mechanisms do not play well with the way my blog generator works. I use a custom preprocessor for dividing code and comments to display them nicely side by side. This tears the code apart and makes it unusable for Klipse. I guess I'll find a solution for this, but for the time being, I'll have to add a single Klipse window to the end of the article to provide a runnable version of the code discussed in the article.
